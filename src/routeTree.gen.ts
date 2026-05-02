@@ -9,15 +9,33 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TicketRouteImport } from './routes/ticket'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SeatsRouteImport } from './routes/seats'
+import { Route as PaymentRouteImport } from './routes/payment'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FlightsRouteImport } from './routes/flights'
 import { Route as FlightDetailsRouteImport } from './routes/flight-details'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TicketRoute = TicketRouteImport.update({
+  id: '/ticket',
+  path: '/ticket',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeatsRoute = SeatsRouteImport.update({
+  id: '/seats',
+  path: '/seats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentRoute = PaymentRouteImport.update({
+  id: '/payment',
+  path: '/payment',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -46,14 +64,20 @@ export interface FileRoutesByFullPath {
   '/flight-details': typeof FlightDetailsRoute
   '/flights': typeof FlightsRoute
   '/login': typeof LoginRoute
+  '/payment': typeof PaymentRoute
+  '/seats': typeof SeatsRoute
   '/signup': typeof SignupRoute
+  '/ticket': typeof TicketRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/flight-details': typeof FlightDetailsRoute
   '/flights': typeof FlightsRoute
   '/login': typeof LoginRoute
+  '/payment': typeof PaymentRoute
+  '/seats': typeof SeatsRoute
   '/signup': typeof SignupRoute
+  '/ticket': typeof TicketRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,14 +85,42 @@ export interface FileRoutesById {
   '/flight-details': typeof FlightDetailsRoute
   '/flights': typeof FlightsRoute
   '/login': typeof LoginRoute
+  '/payment': typeof PaymentRoute
+  '/seats': typeof SeatsRoute
   '/signup': typeof SignupRoute
+  '/ticket': typeof TicketRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/flight-details' | '/flights' | '/login' | '/signup'
+  fullPaths:
+    | '/'
+    | '/flight-details'
+    | '/flights'
+    | '/login'
+    | '/payment'
+    | '/seats'
+    | '/signup'
+    | '/ticket'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/flight-details' | '/flights' | '/login' | '/signup'
-  id: '__root__' | '/' | '/flight-details' | '/flights' | '/login' | '/signup'
+  to:
+    | '/'
+    | '/flight-details'
+    | '/flights'
+    | '/login'
+    | '/payment'
+    | '/seats'
+    | '/signup'
+    | '/ticket'
+  id:
+    | '__root__'
+    | '/'
+    | '/flight-details'
+    | '/flights'
+    | '/login'
+    | '/payment'
+    | '/seats'
+    | '/signup'
+    | '/ticket'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,16 +128,40 @@ export interface RootRouteChildren {
   FlightDetailsRoute: typeof FlightDetailsRoute
   FlightsRoute: typeof FlightsRoute
   LoginRoute: typeof LoginRoute
+  PaymentRoute: typeof PaymentRoute
+  SeatsRoute: typeof SeatsRoute
   SignupRoute: typeof SignupRoute
+  TicketRoute: typeof TicketRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ticket': {
+      id: '/ticket'
+      path: '/ticket'
+      fullPath: '/ticket'
+      preLoaderRoute: typeof TicketRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seats': {
+      id: '/seats'
+      path: '/seats'
+      fullPath: '/seats'
+      preLoaderRoute: typeof SeatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment': {
+      id: '/payment'
+      path: '/payment'
+      fullPath: '/payment'
+      preLoaderRoute: typeof PaymentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -124,7 +200,10 @@ const rootRouteChildren: RootRouteChildren = {
   FlightDetailsRoute: FlightDetailsRoute,
   FlightsRoute: FlightsRoute,
   LoginRoute: LoginRoute,
+  PaymentRoute: PaymentRoute,
+  SeatsRoute: SeatsRoute,
   SignupRoute: SignupRoute,
+  TicketRoute: TicketRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
