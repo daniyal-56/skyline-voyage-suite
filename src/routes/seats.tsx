@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -35,6 +35,8 @@ const initialSeats = generateSeats();
 
 function SeatsPage() {
   const [seats, setSeats] = useState(initialSeats);
+  const [selectionError, setSelectionError] = useState("");
+  const navigate = useNavigate({ from: "/seats" });
   const selected = seats.flatMap((r) => r.seats).filter((s) => s.status === "selected");
 
   const seatSurcharge = useMemo(() => selected.reduce((sum, s) => sum + seatPrices[s.cls], 0), [selected]);
@@ -42,6 +44,7 @@ function SeatsPage() {
   const total = useMemo(() => baseFare + seatSurcharge + taxes, [seatSurcharge, taxes]);
 
   const toggleSeat = (seatId: string) => {
+    setSelectionError("");
     setSeats((prev) =>
       prev.map((row) => ({
         ...row,
@@ -69,6 +72,15 @@ function SeatsPage() {
     seatSurcharge: String(seatSurcharge),
     taxes: String(taxes),
     total: String(total),
+  };
+
+  const continueToPayment = () => {
+    if (selected.length === 0) {
+      setSelectionError("Select at least one available seat before continuing.");
+      return;
+    }
+
+    navigate({ to: "/payment", search: paymentSearch });
   };
 
   return (
@@ -154,11 +166,10 @@ function SeatsPage() {
                 </div>
               )}
 
-              <Button variant="hero" size="lg" className="w-full" disabled={selected.length === 0} asChild>
-                <Link to="/payment" search={paymentSearch}>
-                  Continue to Payment
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+              {selectionError && <p className="mb-3 text-xs font-medium text-error">{selectionError}</p>}
+              <Button variant="hero" size="lg" className="w-full" onClick={continueToPayment}>
+                Continue to Payment
+                <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
           </div>
