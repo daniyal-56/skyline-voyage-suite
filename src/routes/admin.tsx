@@ -85,7 +85,7 @@ function AdminPage() {
                     </defs>
                     <XAxis dataKey="month" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
                     <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v / 1000}k`} />
-                    <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, "Revenue"]} />
+                    <Tooltip formatter={(v: any) => [`$${Number(v).toLocaleString()}`, "Revenue"]} />
                     <Area type="monotone" dataKey="revenue" stroke="#00A8A8" fill="url(#revGrad)" strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>

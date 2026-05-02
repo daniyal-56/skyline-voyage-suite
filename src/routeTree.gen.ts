@@ -10,12 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TicketRouteImport } from './routes/ticket'
+import { Route as StaffRouteImport } from './routes/staff'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SeatsRouteImport } from './routes/seats'
 import { Route as PaymentRouteImport } from './routes/payment'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FlightsRouteImport } from './routes/flights'
 import { Route as FlightDetailsRouteImport } from './routes/flight-details'
+import { Route as BookingsRouteImport } from './routes/bookings'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
 const TicketRoute = TicketRouteImport.update({
@@ -23,9 +27,19 @@ const TicketRoute = TicketRouteImport.update({
   path: '/ticket',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StaffRoute = StaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SeatsRoute = SeatsRouteImport.update({
@@ -53,6 +67,16 @@ const FlightDetailsRoute = FlightDetailsRouteImport.update({
   path: '/flight-details',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BookingsRoute = BookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -61,76 +85,104 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/bookings': typeof BookingsRoute
   '/flight-details': typeof FlightDetailsRoute
   '/flights': typeof FlightsRoute
   '/login': typeof LoginRoute
   '/payment': typeof PaymentRoute
   '/seats': typeof SeatsRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/staff': typeof StaffRoute
   '/ticket': typeof TicketRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/bookings': typeof BookingsRoute
   '/flight-details': typeof FlightDetailsRoute
   '/flights': typeof FlightsRoute
   '/login': typeof LoginRoute
   '/payment': typeof PaymentRoute
   '/seats': typeof SeatsRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/staff': typeof StaffRoute
   '/ticket': typeof TicketRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/bookings': typeof BookingsRoute
   '/flight-details': typeof FlightDetailsRoute
   '/flights': typeof FlightsRoute
   '/login': typeof LoginRoute
   '/payment': typeof PaymentRoute
   '/seats': typeof SeatsRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/staff': typeof StaffRoute
   '/ticket': typeof TicketRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
+    | '/bookings'
     | '/flight-details'
     | '/flights'
     | '/login'
     | '/payment'
     | '/seats'
+    | '/settings'
     | '/signup'
+    | '/staff'
     | '/ticket'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
+    | '/bookings'
     | '/flight-details'
     | '/flights'
     | '/login'
     | '/payment'
     | '/seats'
+    | '/settings'
     | '/signup'
+    | '/staff'
     | '/ticket'
   id:
     | '__root__'
     | '/'
+    | '/admin'
+    | '/bookings'
     | '/flight-details'
     | '/flights'
     | '/login'
     | '/payment'
     | '/seats'
+    | '/settings'
     | '/signup'
+    | '/staff'
     | '/ticket'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  BookingsRoute: typeof BookingsRoute
   FlightDetailsRoute: typeof FlightDetailsRoute
   FlightsRoute: typeof FlightsRoute
   LoginRoute: typeof LoginRoute
   PaymentRoute: typeof PaymentRoute
   SeatsRoute: typeof SeatsRoute
+  SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
+  StaffRoute: typeof StaffRoute
   TicketRoute: typeof TicketRoute
 }
 
@@ -143,11 +195,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TicketRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/staff': {
+      id: '/staff'
+      path: '/staff'
+      fullPath: '/staff'
+      preLoaderRoute: typeof StaffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/seats': {
@@ -185,6 +251,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FlightDetailsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bookings': {
+      id: '/bookings'
+      path: '/bookings'
+      fullPath: '/bookings'
+      preLoaderRoute: typeof BookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -197,12 +277,16 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  BookingsRoute: BookingsRoute,
   FlightDetailsRoute: FlightDetailsRoute,
   FlightsRoute: FlightsRoute,
   LoginRoute: LoginRoute,
   PaymentRoute: PaymentRoute,
   SeatsRoute: SeatsRoute,
+  SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
+  StaffRoute: StaffRoute,
   TicketRoute: TicketRoute,
 }
 export const routeTree = rootRouteImport
