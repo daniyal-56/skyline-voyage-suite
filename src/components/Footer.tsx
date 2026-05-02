@@ -20,7 +20,7 @@ export function Footer() {
               Your premium partner for seamless air travel. Book with confidence, fly with comfort.
             </p>
             <div className="flex gap-3 mt-6">
-              {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
+              {[Globe, Mail, Phone, Plane].map((Icon, i) => (
                 <button key={i} className="w-9 h-9 rounded-lg bg-primary-foreground/5 hover:bg-teal/20 flex items-center justify-center text-primary-foreground/50 hover:text-teal transition-all">
                   <Icon className="w-4 h-4" />
                 </button>
