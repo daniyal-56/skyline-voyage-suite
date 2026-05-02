@@ -31,7 +31,7 @@ function PaymentPage() {
   const seatList = seats ? seats.split(",") : [];
   const classList = classes ? classes.split(",") : [];
   const seatDisplay = seatList.length > 0
-    ? seatList.map((s, i) => `${s} (${classList[i] || "Economy"})`).join(", ")
+    ? seatList.map((s: string, i: number) => `${s} (${classList[i] || "Economy"})`).join(", ")
     : "12A (Economy)";
 
   return (
