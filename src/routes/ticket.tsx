@@ -6,9 +6,9 @@ import { CheckCircle, Download, Mail, Plane, QrCode } from "lucide-react";
 export const Route = createFileRoute("/ticket")({
   head: () => ({ meta: [{ title: "E-Ticket Confirmation — SkyLine Airways" }] }),
   validateSearch: (search: Record<string, unknown>) => ({
-    seats: (search.seats as string) || "12A",
-    classes: (search.classes as string) || "Economy",
-    total: (search.total as string) || "736.50",
+    seats: ((search.seats as string) || undefined) as string | undefined,
+    classes: ((search.classes as string) || undefined) as string | undefined,
+    total: ((search.total as string) || undefined) as string | undefined,
   }),
   component: TicketPage,
 });
