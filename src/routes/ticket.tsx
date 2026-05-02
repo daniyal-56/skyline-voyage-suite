@@ -14,10 +14,13 @@ export const Route = createFileRoute("/ticket")({
 });
 
 function TicketPage() {
-  const { seats, classes, total } = Route.useSearch();
+  const search = Route.useSearch();
+  const seats = search.seats || "12A";
+  const classes = search.classes || "Economy";
+  const total = search.total || "736.50";
 
-  const seatList = seats ? seats.split(",") : ["12A"];
-  const classList = classes ? classes.split(",") : ["Economy"];
+  const seatList = seats.split(",");
+  const classList = classes.split(",");
   const seatDisplay = seatList.map((s: string, i: number) => `${s} · ${classList[i] || "Economy"}`).join("  |  ");
 
   return (
