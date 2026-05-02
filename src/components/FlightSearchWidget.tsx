@@ -1,13 +1,42 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Users, ArrowRightLeft, Search, ChevronDown } from "lucide-react";
+import { MapPin, Calendar, Users, Search, ChevronDown } from "lucide-react";
 
 export function FlightSearchWidget({ compact = false }: { compact?: boolean }) {
   const [tripType, setTripType] = useState<"round" | "one-way">("round");
+  const [values, setValues] = useState({ from: "New York (JFK)", to: "London (LHR)", departure: "", returnDate: "", passengers: "1 Adult" });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!values.from.trim() || !values.to.trim()) {
+      setError("Enter both origin and destination.");
+      return;
+    }
+
+    if (values.from.trim().toLowerCase() === values.to.trim().toLowerCase()) {
+      setError("Origin and destination must be different.");
+      return;
+    }
+
+    if (!values.departure) {
+      setError("Select a departure date.");
+      return;
+    }
+
+    if (tripType === "round" && values.returnDate && values.returnDate < values.departure) {
+      setError("Return date must be after departure.");
+      return;
+    }
+
+    setError("");
+    navigate({ to: "/flights" });
+  };
 
   return (
-    <div className={`bg-card rounded-2xl shadow-xl ${compact ? "p-4" : "p-6 lg:p-8"}`} style={{ boxShadow: "var(--shadow-elevated)" }}>
+    <form className={`bg-card rounded-2xl shadow-xl ${compact ? "p-4" : "p-6 lg:p-8"}`} style={{ boxShadow: "var(--shadow-elevated)" }} onSubmit={handleSubmit} noValidate>
       {!compact && (
         <div className="flex gap-4 mb-6">
           {(["round", "one-way"] as const).map((t) => (
@@ -31,7 +60,7 @@ export function FlightSearchWidget({ compact = false }: { compact?: boolean }) {
           <label className="text-xs font-medium text-muted-foreground mb-1.5 block">From</label>
           <div className="flex items-center gap-2 h-12 px-4 rounded-xl border border-border bg-background">
             <MapPin className="w-4 h-4 text-teal shrink-0" />
-            <input className="w-full text-sm font-medium bg-transparent focus:outline-none" placeholder="City or airport" defaultValue="New York (JFK)" />
+            <input className="w-full text-sm font-medium bg-transparent focus:outline-none" placeholder="City or airport" value={values.from} onChange={(event) => setValues((prev) => ({ ...prev, from: event.target.value }))} />
           </div>
         </div>
 
@@ -40,7 +69,7 @@ export function FlightSearchWidget({ compact = false }: { compact?: boolean }) {
             <label className="text-xs font-medium text-muted-foreground mb-1.5 block">To</label>
             <div className="flex items-center gap-2 h-12 px-4 rounded-xl border border-border bg-background">
               <MapPin className="w-4 h-4 text-teal shrink-0" />
-              <input className="w-full text-sm font-medium bg-transparent focus:outline-none" placeholder="City or airport" defaultValue="London (LHR)" />
+              <input className="w-full text-sm font-medium bg-transparent focus:outline-none" placeholder="City or airport" value={values.to} onChange={(event) => setValues((prev) => ({ ...prev, to: event.target.value }))} />
             </div>
           </div>
         </div>
@@ -49,7 +78,7 @@ export function FlightSearchWidget({ compact = false }: { compact?: boolean }) {
           <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Departure</label>
           <div className="flex items-center gap-2 h-12 px-4 rounded-xl border border-border bg-background">
             <Calendar className="w-4 h-4 text-teal shrink-0" />
-            <input type="date" className="w-full text-sm font-medium bg-transparent focus:outline-none" />
+            <input type="date" className="w-full text-sm font-medium bg-transparent focus:outline-none" value={values.departure} onChange={(event) => setValues((prev) => ({ ...prev, departure: event.target.value }))} />
           </div>
         </div>
 
@@ -57,7 +86,7 @@ export function FlightSearchWidget({ compact = false }: { compact?: boolean }) {
           <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Return</label>
           <div className="flex items-center gap-2 h-12 px-4 rounded-xl border border-border bg-background">
             <Calendar className="w-4 h-4 text-teal shrink-0" />
-            <input type="date" className="w-full text-sm font-medium bg-transparent focus:outline-none" />
+            <input type="date" className="w-full text-sm font-medium bg-transparent focus:outline-none" value={values.returnDate} onChange={(event) => setValues((prev) => ({ ...prev, returnDate: event.target.value }))} disabled={tripType === "one-way"} />
           </div>
         </div>
 
@@ -65,7 +94,7 @@ export function FlightSearchWidget({ compact = false }: { compact?: boolean }) {
           <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Passengers</label>
           <div className="flex items-center gap-2 h-12 px-4 rounded-xl border border-border bg-background">
             <Users className="w-4 h-4 text-teal shrink-0" />
-            <select className="w-full text-sm font-medium bg-transparent focus:outline-none appearance-none">
+            <select className="w-full text-sm font-medium bg-transparent focus:outline-none appearance-none" value={values.passengers} onChange={(event) => setValues((prev) => ({ ...prev, passengers: event.target.value }))}>
               <option>1 Adult</option>
               <option>2 Adults</option>
               <option>3 Adults</option>
@@ -75,14 +104,13 @@ export function FlightSearchWidget({ compact = false }: { compact?: boolean }) {
         </div>
 
         <div className="lg:col-span-1 flex items-end">
-          <Button variant="hero" size="lg" className="w-full h-12" asChild>
-            <Link to="/flights">
-              <Search className="w-4 h-4" />
-              Search
-            </Link>
+          <Button variant="hero" size="lg" className="w-full h-12" type="submit">
+            <Search className="w-4 h-4" />
+            Search
           </Button>
         </div>
       </div>
-    </div>
+      {error && <p className="mt-3 text-xs font-medium text-error">{error}</p>}
+    </form>
   );
 }
