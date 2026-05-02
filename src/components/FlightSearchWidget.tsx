@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Users, Search, ChevronDown } from "lucide-react";
@@ -9,7 +9,7 @@ export function FlightSearchWidget({ compact = false }: { compact?: boolean }) {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!values.from.trim() || !values.to.trim()) {
       setError("Enter both origin and destination.");
