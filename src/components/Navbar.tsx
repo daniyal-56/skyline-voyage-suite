@@ -53,11 +53,20 @@ export function Navbar({ transparent = false }: { transparent?: boolean }) {
           <div className="hidden lg:flex items-center gap-3">
             {user ? (
               <>
-                <Link to="/bookings" className="flex items-center gap-2 rounded-xl bg-primary-foreground/10 px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/15 transition-colors">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-teal text-xs text-primary-foreground">{getInitials(user.name)}</span>
+                <Link
+                  to="/bookings"
+                  className="flex items-center gap-2 rounded-xl bg-primary-foreground/10 px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/15 transition-colors"
+                >
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-teal text-xs text-primary-foreground">
+                    {getInitials(user.name)}
+                  </span>
                   {user.name}
                 </Link>
-                <button onClick={signOutDemoUser} className="flex h-8 w-8 items-center justify-center rounded-lg text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground transition-colors" aria-label="Log out">
+                <button
+                  onClick={signOutDemoUser}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground transition-colors"
+                  aria-label="Log out"
+                >
                   <LogOut className="h-4 w-4" />
                 </button>
               </>
@@ -102,11 +111,21 @@ export function Navbar({ transparent = false }: { transparent?: boolean }) {
             <div className="pt-4 flex flex-col gap-2">
               {user ? (
                 <>
-                  <Link to="/bookings" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 rounded-xl bg-primary-foreground/10 px-4 py-3 text-sm font-semibold text-primary-foreground">
+                  <Link
+                    to="/bookings"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 rounded-xl bg-primary-foreground/10 px-4 py-3 text-sm font-semibold text-primary-foreground"
+                  >
                     <UserRound className="h-4 w-4 text-teal" />
                     Signed in as {user.name}
                   </Link>
-                  <Button variant="nav" onClick={() => { signOutDemoUser(); setMobileOpen(false); }}>
+                  <Button
+                    variant="nav"
+                    onClick={() => {
+                      signOutDemoUser();
+                      setMobileOpen(false);
+                    }}
+                  >
                     <LogOut className="h-4 w-4" />
                     Logout
                   </Button>
@@ -114,10 +133,14 @@ export function Navbar({ transparent = false }: { transparent?: boolean }) {
               ) : (
                 <>
                   <Button variant="nav" asChild>
-                    <Link to="/login" onClick={() => setMobileOpen(false)}>Log In</Link>
+                    <Link to="/login" onClick={() => setMobileOpen(false)}>
+                      Log In
+                    </Link>
                   </Button>
                   <Button variant="nav-solid" asChild>
-                    <Link to="/signup" onClick={() => setMobileOpen(false)}>Sign Up</Link>
+                    <Link to="/signup" onClick={() => setMobileOpen(false)}>
+                      Sign Up
+                    </Link>
                   </Button>
                 </>
               )}

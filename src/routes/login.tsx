@@ -50,7 +50,9 @@ function LoginPage() {
             </span>
           </Link>
           <h2 className="text-4xl font-bold text-primary-foreground leading-tight mb-4">
-            Fly Smarter,<br />Travel Better.
+            Fly Smarter,
+            <br />
+            Travel Better.
           </h2>
           <p className="text-primary-foreground/60 leading-relaxed">
             Access exclusive deals, manage your bookings, and enjoy a seamless travel experience.
@@ -69,7 +71,9 @@ function LoginPage() {
           </Link>
 
           <h1 className="text-2xl font-bold text-foreground mb-1">Welcome back</h1>
-          <p className="text-muted-foreground text-sm mb-8">Enter your credentials to access your account</p>
+          <p className="text-muted-foreground text-sm mb-8">
+            Enter your credentials to access your account
+          </p>
 
           {user && (
             <div className="mb-5 flex items-center gap-2 rounded-xl border border-success/20 bg-success/5 p-3 text-sm font-medium text-success">
@@ -83,29 +87,60 @@ function LoginPage() {
               <label className="text-sm font-medium text-foreground mb-1.5 block">Email</label>
               <div className="flex items-center gap-3 h-12 px-4 rounded-xl border border-border bg-background focus-within:border-teal focus-within:ring-2 focus-within:ring-teal/20 transition-all">
                 <Mail className="w-4 h-4 text-muted-foreground" />
-                <input className="w-full text-sm bg-transparent focus:outline-none" placeholder="you@example.com" type="email" value={values.email} onChange={(event) => setValues((prev) => ({ ...prev, email: event.target.value }))} aria-invalid={Boolean(errors.email)} />
+                <input
+                  className="w-full text-sm bg-transparent focus:outline-none"
+                  placeholder="you@example.com"
+                  type="email"
+                  value={values.email}
+                  onChange={(event) =>
+                    setValues((prev) => ({ ...prev, email: event.target.value }))
+                  }
+                  aria-invalid={Boolean(errors.email)}
+                />
               </div>
-              {errors.email && <p className="mt-1.5 text-xs font-medium text-error">{errors.email}</p>}
+              {errors.email && (
+                <p className="mt-1.5 text-xs font-medium text-error">{errors.email}</p>
+              )}
             </div>
 
             <div>
               <label className="text-sm font-medium text-foreground mb-1.5 block">Password</label>
               <div className="flex items-center gap-3 h-12 px-4 rounded-xl border border-border bg-background focus-within:border-teal focus-within:ring-2 focus-within:ring-teal/20 transition-all">
                 <Lock className="w-4 h-4 text-muted-foreground" />
-                <input className="w-full text-sm bg-transparent focus:outline-none" placeholder="••••••••" type={showPw ? "text" : "password"} value={values.password} onChange={(event) => setValues((prev) => ({ ...prev, password: event.target.value }))} aria-invalid={Boolean(errors.password)} />
-                <button type="button" onClick={() => setShowPw(!showPw)} className="text-muted-foreground hover:text-foreground transition-colors">
+                <input
+                  className="w-full text-sm bg-transparent focus:outline-none"
+                  placeholder="••••••••"
+                  type={showPw ? "text" : "password"}
+                  value={values.password}
+                  onChange={(event) =>
+                    setValues((prev) => ({ ...prev, password: event.target.value }))
+                  }
+                  aria-invalid={Boolean(errors.password)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPw(!showPw)}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {errors.password && <p className="mt-1.5 text-xs font-medium text-error">{errors.password}</p>}
+              {errors.password && (
+                <p className="mt-1.5 text-xs font-medium text-error">{errors.password}</p>
+              )}
             </div>
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded border-border text-teal focus:ring-teal" />
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-border text-teal focus:ring-teal"
+                />
                 <span className="text-muted-foreground">Remember me</span>
               </label>
-              <a href="#" className="text-teal hover:underline font-medium">Forgot password?</a>
+              <a href="#" className="text-teal hover:underline font-medium">
+                Forgot password?
+              </a>
             </div>
 
             <Button variant="hero" size="lg" className="w-full" type="submit">
@@ -113,18 +148,30 @@ function LoginPage() {
             </Button>
 
             <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
-              <div className="relative flex justify-center"><span className="bg-background px-4 text-xs text-muted-foreground">Or continue with</span></div>
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-background px-4 text-xs text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" size="lg">Google</Button>
-              <Button variant="outline" size="lg">Apple</Button>
+              <Button variant="outline" size="lg">
+                Google
+              </Button>
+              <Button variant="outline" size="lg">
+                Apple
+              </Button>
             </div>
 
             <p className="text-center text-sm text-muted-foreground mt-6">
               Don't have an account?{" "}
-              <Link to="/signup" className="text-teal font-semibold hover:underline">Sign up</Link>
+              <Link to="/signup" className="text-teal font-semibold hover:underline">
+                Sign up
+              </Link>
             </p>
           </form>
         </div>

@@ -39,8 +39,14 @@ function SeatsPage() {
   const navigate = useNavigate({ from: "/seats" });
   const selected = seats.flatMap((r) => r.seats).filter((s) => s.status === "selected");
 
-  const seatSurcharge = useMemo(() => selected.reduce((sum, s) => sum + seatPrices[s.cls], 0), [selected]);
-  const taxes = useMemo(() => Math.round((baseFare + seatSurcharge) * 0.1348 * 100) / 100, [seatSurcharge]);
+  const seatSurcharge = useMemo(
+    () => selected.reduce((sum, s) => sum + seatPrices[s.cls], 0),
+    [selected],
+  );
+  const taxes = useMemo(
+    () => Math.round((baseFare + seatSurcharge) * 0.1348 * 100) / 100,
+    [seatSurcharge],
+  );
   const total = useMemo(() => baseFare + seatSurcharge + taxes, [seatSurcharge, taxes]);
 
   const toggleSeat = (seatId: string) => {
@@ -51,17 +57,20 @@ function SeatsPage() {
         seats: row.seats.map((s) =>
           s.id === seatId && s.status !== "occupied"
             ? { ...s, status: s.status === "selected" ? "available" : "selected" }
-            : s
+            : s,
         ),
-      }))
+      })),
     );
   };
 
   const seatColor = (status: SeatStatus) => {
     switch (status) {
-      case "available": return "bg-success/20 border-success/40 hover:bg-success/30 cursor-pointer";
-      case "selected": return "bg-teal border-teal cursor-pointer";
-      case "occupied": return "bg-muted border-border cursor-not-allowed opacity-50";
+      case "available":
+        return "bg-success/20 border-success/40 hover:bg-success/30 cursor-pointer";
+      case "selected":
+        return "bg-teal border-teal cursor-pointer";
+      case "occupied":
+        return "bg-muted border-border cursor-not-allowed opacity-50";
     }
   };
 
@@ -105,14 +114,21 @@ function SeatsPage() {
               ))}
             </div>
 
-            <div className="bg-card rounded-2xl p-6 overflow-x-auto" style={{ boxShadow: "var(--shadow-card)" }}>
+            <div
+              className="bg-card rounded-2xl p-6 overflow-x-auto"
+              style={{ boxShadow: "var(--shadow-card)" }}
+            >
               <div className="min-w-[320px] mx-auto max-w-md">
                 {seats.map((row) => {
                   const isFCOrBiz = row.seats.length === 4;
                   return (
                     <div key={row.row} className="flex items-center gap-1 mb-1.5">
-                      <span className="w-6 text-xs text-muted-foreground text-right">{row.row}</span>
-                      <div className={`flex-1 flex ${isFCOrBiz ? "justify-center gap-8" : "justify-center gap-1"}`}>
+                      <span className="w-6 text-xs text-muted-foreground text-right">
+                        {row.row}
+                      </span>
+                      <div
+                        className={`flex-1 flex ${isFCOrBiz ? "justify-center gap-8" : "justify-center gap-1"}`}
+                      >
                         {row.seats.map((seat, i) => (
                           <div key={seat.id}>
                             {!isFCOrBiz && i === 3 && <div className="inline-block w-4" />}
@@ -134,20 +150,30 @@ function SeatsPage() {
           </div>
 
           <div>
-            <div className="bg-card rounded-2xl p-6 sticky top-24" style={{ boxShadow: "var(--shadow-card)" }}>
+            <div
+              className="bg-card rounded-2xl p-6 sticky top-24"
+              style={{ boxShadow: "var(--shadow-card)" }}
+            >
               <h3 className="text-lg font-semibold text-foreground mb-4">Selected Seats</h3>
               {selected.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No seats selected yet. Click on an available seat to select it.</p>
+                <p className="text-sm text-muted-foreground">
+                  No seats selected yet. Click on an available seat to select it.
+                </p>
               ) : (
                 <div className="space-y-3 mb-4">
                   {selected.map((s) => (
-                    <div key={s.id} className="flex items-center justify-between p-3 rounded-xl bg-teal/5 border border-teal/20">
+                    <div
+                      key={s.id}
+                      className="flex items-center justify-between p-3 rounded-xl bg-teal/5 border border-teal/20"
+                    >
                       <div>
                         <span className="text-sm font-semibold text-foreground">Seat {s.id}</span>
                         <span className="ml-2 text-xs text-muted-foreground">{s.cls}</span>
                       </div>
                       <span className="text-sm font-semibold text-teal">
-                        {seatPrices[s.cls] > 0 ? `+$${seatPrices[s.cls].toLocaleString()}` : "Included"}
+                        {seatPrices[s.cls] > 0
+                          ? `+$${seatPrices[s.cls].toLocaleString()}`
+                          : "Included"}
                       </span>
                     </div>
                   ))}
@@ -156,9 +182,20 @@ function SeatsPage() {
 
               {selected.length > 0 && (
                 <div className="space-y-2 text-sm border-t border-border pt-4 mb-4">
-                  <div className="flex justify-between"><span className="text-muted-foreground">Base Fare</span><span className="text-foreground">${baseFare.toFixed(2)}</span></div>
-                  {seatSurcharge > 0 && <div className="flex justify-between"><span className="text-muted-foreground">Seat Upgrade</span><span className="text-foreground">+${seatSurcharge.toFixed(2)}</span></div>}
-                  <div className="flex justify-between"><span className="text-muted-foreground">Taxes & Fees</span><span className="text-foreground">${taxes.toFixed(2)}</span></div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Base Fare</span>
+                    <span className="text-foreground">${baseFare.toFixed(2)}</span>
+                  </div>
+                  {seatSurcharge > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Seat Upgrade</span>
+                      <span className="text-foreground">+${seatSurcharge.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Taxes & Fees</span>
+                    <span className="text-foreground">${taxes.toFixed(2)}</span>
+                  </div>
                   <div className="flex justify-between font-semibold pt-2 border-t border-border">
                     <span className="text-foreground">Total</span>
                     <span className="text-xl text-gold">${total.toFixed(2)}</span>
@@ -166,7 +203,9 @@ function SeatsPage() {
                 </div>
               )}
 
-              {selectionError && <p className="mb-3 text-xs font-medium text-error">{selectionError}</p>}
+              {selectionError && (
+                <p className="mb-3 text-xs font-medium text-error">{selectionError}</p>
+              )}
               <Button variant="hero" size="lg" className="w-full" onClick={continueToPayment}>
                 Continue to Payment
                 <ArrowRight className="w-4 h-4" />

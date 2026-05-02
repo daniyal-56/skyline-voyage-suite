@@ -38,7 +38,10 @@ export function signInDemoUser(email: string, name?: string) {
         .join(" ")
     : fallbackUser.name;
 
-  const user = { name: name?.trim() || derivedName || fallbackUser.name, email: cleanEmail || fallbackUser.email };
+  const user = {
+    name: name?.trim() || derivedName || fallbackUser.name,
+    email: cleanEmail || fallbackUser.email,
+  };
   window.localStorage.setItem(AUTH_KEY, JSON.stringify(user));
   window.dispatchEvent(new Event(AUTH_EVENT));
   return user;
@@ -50,12 +53,14 @@ export function signOutDemoUser() {
 }
 
 export function getInitials(name: string) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("") || "SL";
+  return (
+    name
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join("") || "SL"
+  );
 }
 
 export function useDemoAuth() {

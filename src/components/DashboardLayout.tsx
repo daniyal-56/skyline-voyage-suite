@@ -1,5 +1,19 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Plane, LayoutDashboard, Search, BookOpen, CreditCard, Settings, LogOut, Ticket, Users, BarChart3, FileText, Radio, UserCheck } from "lucide-react";
+import {
+  Plane,
+  LayoutDashboard,
+  Search,
+  BookOpen,
+  CreditCard,
+  Settings,
+  LogOut,
+  Ticket,
+  Users,
+  BarChart3,
+  FileText,
+  Radio,
+  UserCheck,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getInitials, signOutDemoUser, useDemoAuth } from "@/lib/demo-auth";
 
@@ -32,9 +46,14 @@ const staffLinks: SidebarItem[] = [
   { label: "Settings", to: "/settings", icon: Settings },
 ];
 
-export function DashboardSidebar({ variant = "passenger" }: { variant?: "passenger" | "admin" | "staff" }) {
+export function DashboardSidebar({
+  variant = "passenger",
+}: {
+  variant?: "passenger" | "admin" | "staff";
+}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const links = variant === "admin" ? adminLinks : variant === "staff" ? staffLinks : passengerLinks;
+  const links =
+    variant === "admin" ? adminLinks : variant === "staff" ? staffLinks : passengerLinks;
 
   return (
     <aside className="hidden lg:flex flex-col w-64 bg-navy min-h-screen p-4">
@@ -42,9 +61,7 @@ export function DashboardSidebar({ variant = "passenger" }: { variant?: "passeng
         <div className="w-9 h-9 rounded-xl bg-teal flex items-center justify-center">
           <Plane className="w-5 h-5 text-primary-foreground" />
         </div>
-        <span className="text-lg font-bold text-primary-foreground tracking-tight">
-          SkyLine
-        </span>
+        <span className="text-lg font-bold text-primary-foreground tracking-tight">SkyLine</span>
       </Link>
 
       <nav className="flex-1 space-y-1">
@@ -58,7 +75,7 @@ export function DashboardSidebar({ variant = "passenger" }: { variant?: "passeng
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all",
                 active
                   ? "bg-teal/15 text-teal"
-                  : "text-primary-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5"
+                  : "text-primary-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5",
               )}
             >
               <link.icon className="w-4 h-4" />
@@ -68,7 +85,10 @@ export function DashboardSidebar({ variant = "passenger" }: { variant?: "passeng
         })}
       </nav>
 
-      <button onClick={signOutDemoUser} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-primary-foreground/50 hover:text-error hover:bg-error/10 transition-all mt-4">
+      <button
+        onClick={signOutDemoUser}
+        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-primary-foreground/50 hover:text-error hover:bg-error/10 transition-all mt-4"
+      >
         <LogOut className="w-4 h-4" />
         Logout
       </button>
@@ -93,7 +113,9 @@ export function DashboardHeader() {
       <div className="flex items-center gap-3">
         <div className="hidden sm:block text-right">
           <p className="text-sm font-semibold text-foreground">{displayName}</p>
-          <p className="text-xs text-muted-foreground">{user ? "Successfully logged in" : "Demo session"}</p>
+          <p className="text-xs text-muted-foreground">
+            {user ? "Successfully logged in" : "Demo session"}
+          </p>
         </div>
         <div className="w-9 h-9 rounded-full bg-teal/10 flex items-center justify-center text-teal text-sm font-semibold cursor-pointer hover:bg-teal/20 transition-colors">
           {getInitials(displayName)}
