@@ -2,10 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Download, Mail, Plane, QrCode } from "lucide-react";
+import { useDemoAuth } from "@/lib/demo-auth";
 
 export const Route = createFileRoute("/ticket")({
   head: () => ({ meta: [{ title: "E-Ticket Confirmation — SkyLine Airways" }] }),
-  validateSearch: (search: Record<string, unknown>): { seats?: string; classes?: string; total?: string } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { seats?: string; classes?: string; total?: string } => ({
     seats: (search.seats as string) || undefined,
     classes: (search.classes as string) || undefined,
     total: (search.total as string) || undefined,
@@ -15,13 +18,16 @@ export const Route = createFileRoute("/ticket")({
 
 function TicketPage() {
   const search = Route.useSearch();
+  const { user } = useDemoAuth();
   const seats = search.seats || "12A";
   const classes = search.classes || "Economy";
   const total = search.total || "736.50";
 
   const seatList = seats.split(",");
   const classList = classes.split(",");
-  const seatDisplay = seatList.map((s: string, i: number) => `${s} · ${classList[i] || "Economy"}`).join("  |  ");
+  const seatDisplay = seatList
+    .map((s: string, i: number) => `${s} · ${classList[i] || "Economy"}`)
+    .join("  |  ");
 
   return (
     <div className="min-h-screen bg-background">
@@ -32,10 +38,15 @@ function TicketPage() {
             <CheckCircle className="w-10 h-10 text-success" />
           </div>
           <h1 className="text-3xl font-bold text-foreground">Booking Confirmed!</h1>
-          <p className="text-muted-foreground mt-2">Your e-ticket has been generated. Have a great flight!</p>
+          <p className="text-muted-foreground mt-2">
+            Your e-ticket has been generated. Have a great flight!
+          </p>
         </div>
 
-        <div className="bg-card rounded-2xl overflow-hidden" style={{ boxShadow: "var(--shadow-elevated)" }}>
+        <div
+          className="bg-card rounded-2xl overflow-hidden"
+          style={{ boxShadow: "var(--shadow-elevated)" }}
+        >
           <div className="bg-navy p-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-teal flex items-center justify-center">
@@ -56,7 +67,9 @@ function TicketPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div>
                 <p className="text-xs text-muted-foreground mb-1">Passenger</p>
-                <p className="text-sm font-semibold text-foreground">John Doe</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {user?.name || "Guest Passenger"}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground mb-1">Flight</p>
