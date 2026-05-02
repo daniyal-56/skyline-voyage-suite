@@ -1,8 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Plane, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { Plane, Mail, Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
+import { useState, type FormEvent } from "react";
 import authBg from "@/assets/auth-bg.jpg";
+import { signInDemoUser, useDemoAuth } from "@/lib/demo-auth";
+import { validateLogin } from "@/lib/validation";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -16,6 +18,21 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const [showPw, setShowPw] = useState(false);
+  const [values, setValues] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState<Partial<Record<"email" | "password", string>>>({});
+  const navigate = useNavigate({ from: "/login" });
+  const { user } = useDemoAuth();
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const nextErrors = validateLogin(values);
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length === 0) {
+      signInDemoUser(values.email);
+      navigate({ to: "/bookings" });
+    }
+  };
 
   return (
     <div className="min-h-screen flex">
@@ -54,24 +71,33 @@ function LoginPage() {
           <h1 className="text-2xl font-bold text-foreground mb-1">Welcome back</h1>
           <p className="text-muted-foreground text-sm mb-8">Enter your credentials to access your account</p>
 
-          <div className="space-y-4">
+          {user && (
+            <div className="mb-5 flex items-center gap-2 rounded-xl border border-success/20 bg-success/5 p-3 text-sm font-medium text-success">
+              <CheckCircle className="h-4 w-4" />
+              Successfully logged in as {user.name}
+            </div>
+          )}
+
+          <form className="space-y-4" onSubmit={handleSubmit} noValidate>
             <div>
               <label className="text-sm font-medium text-foreground mb-1.5 block">Email</label>
               <div className="flex items-center gap-3 h-12 px-4 rounded-xl border border-border bg-background focus-within:border-teal focus-within:ring-2 focus-within:ring-teal/20 transition-all">
                 <Mail className="w-4 h-4 text-muted-foreground" />
-                <input className="w-full text-sm bg-transparent focus:outline-none" placeholder="you@example.com" type="email" />
+                <input className="w-full text-sm bg-transparent focus:outline-none" placeholder="you@example.com" type="email" value={values.email} onChange={(event) => setValues((prev) => ({ ...prev, email: event.target.value }))} aria-invalid={Boolean(errors.email)} />
               </div>
+              {errors.email && <p className="mt-1.5 text-xs font-medium text-error">{errors.email}</p>}
             </div>
 
             <div>
               <label className="text-sm font-medium text-foreground mb-1.5 block">Password</label>
               <div className="flex items-center gap-3 h-12 px-4 rounded-xl border border-border bg-background focus-within:border-teal focus-within:ring-2 focus-within:ring-teal/20 transition-all">
                 <Lock className="w-4 h-4 text-muted-foreground" />
-                <input className="w-full text-sm bg-transparent focus:outline-none" placeholder="••••••••" type={showPw ? "text" : "password"} />
-                <button onClick={() => setShowPw(!showPw)} className="text-muted-foreground hover:text-foreground transition-colors">
+                <input className="w-full text-sm bg-transparent focus:outline-none" placeholder="••••••••" type={showPw ? "text" : "password"} value={values.password} onChange={(event) => setValues((prev) => ({ ...prev, password: event.target.value }))} aria-invalid={Boolean(errors.password)} />
+                <button type="button" onClick={() => setShowPw(!showPw)} className="text-muted-foreground hover:text-foreground transition-colors">
                   {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              {errors.password && <p className="mt-1.5 text-xs font-medium text-error">{errors.password}</p>}
             </div>
 
             <div className="flex items-center justify-between text-sm">
@@ -82,8 +108,8 @@ function LoginPage() {
               <a href="#" className="text-teal hover:underline font-medium">Forgot password?</a>
             </div>
 
-            <Button variant="hero" size="lg" className="w-full" asChild>
-              <Link to="/bookings">Log In</Link>
+            <Button variant="hero" size="lg" className="w-full" type="submit">
+              Log In
             </Button>
 
             <div className="relative my-6">
@@ -100,7 +126,7 @@ function LoginPage() {
               Don't have an account?{" "}
               <Link to="/signup" className="text-teal font-semibold hover:underline">Sign up</Link>
             </p>
-          </div>
+          </form>
         </div>
       </div>
     </div>
