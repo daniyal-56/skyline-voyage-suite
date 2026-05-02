@@ -82,8 +82,8 @@ function LoginPage() {
               <a href="#" className="text-teal hover:underline font-medium">Forgot password?</a>
             </div>
 
-            <Button variant="hero" size="lg" className="w-full">
-              Log In
+            <Button variant="hero" size="lg" className="w-full" asChild>
+              <Link to="/bookings">Log In</Link>
             </Button>
 
             <div className="relative my-6">
