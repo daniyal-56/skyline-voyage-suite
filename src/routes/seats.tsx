@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 export const Route = createFileRoute("/seats")({
   head: () => ({ meta: [{ title: "Select Your Seat — SkyLine Airways" }] }),
@@ -10,6 +10,9 @@ export const Route = createFileRoute("/seats")({
 });
 
 type SeatStatus = "available" | "occupied" | "selected";
+
+const seatPrices: Record<string, number> = { First: 1800, Business: 600, Economy: 0 };
+const baseFare = 649;
 
 const generateSeats = () => {
   const rows: { row: number; seats: { id: string; status: SeatStatus; cls: string }[] }[] = [];
@@ -34,6 +37,10 @@ function SeatsPage() {
   const [seats, setSeats] = useState(initialSeats);
   const selected = seats.flatMap((r) => r.seats).filter((s) => s.status === "selected");
 
+  const seatSurcharge = useMemo(() => selected.reduce((sum, s) => sum + seatPrices[s.cls], 0), [selected]);
+  const taxes = useMemo(() => Math.round((baseFare + seatSurcharge) * 0.1348 * 100) / 100, [seatSurcharge]);
+  const total = useMemo(() => baseFare + seatSurcharge + taxes, [seatSurcharge, taxes]);
+
   const toggleSeat = (seatId: string) => {
     setSeats((prev) =>
       prev.map((row) => ({
@@ -55,6 +62,15 @@ function SeatsPage() {
     }
   };
 
+  const paymentSearch = {
+    seats: selected.map((s) => s.id).join(","),
+    classes: selected.map((s) => s.cls).join(","),
+    baseFare: String(baseFare),
+    seatSurcharge: String(seatSurcharge),
+    taxes: String(taxes),
+    total: String(total),
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -64,7 +80,6 @@ function SeatsPage() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            {/* Legend */}
             <div className="flex gap-6 mb-6">
               {[
                 { label: "Available", color: "bg-success/20 border-success/40" },
@@ -78,7 +93,6 @@ function SeatsPage() {
               ))}
             </div>
 
-            {/* Aircraft */}
             <div className="bg-card rounded-2xl p-6 overflow-x-auto" style={{ boxShadow: "var(--shadow-card)" }}>
               <div className="min-w-[320px] mx-auto max-w-md">
                 {seats.map((row) => {
@@ -107,14 +121,13 @@ function SeatsPage() {
             </div>
           </div>
 
-          {/* Summary */}
           <div>
             <div className="bg-card rounded-2xl p-6 sticky top-24" style={{ boxShadow: "var(--shadow-card)" }}>
               <h3 className="text-lg font-semibold text-foreground mb-4">Selected Seats</h3>
               {selected.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No seats selected yet. Click on an available seat to select it.</p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-3 mb-4">
                   {selected.map((s) => (
                     <div key={s.id} className="flex items-center justify-between p-3 rounded-xl bg-teal/5 border border-teal/20">
                       <div>
@@ -122,14 +135,27 @@ function SeatsPage() {
                         <span className="ml-2 text-xs text-muted-foreground">{s.cls}</span>
                       </div>
                       <span className="text-sm font-semibold text-teal">
-                        {s.cls === "First" ? "+$1,800" : s.cls === "Business" ? "+$600" : "Included"}
+                        {seatPrices[s.cls] > 0 ? `+$${seatPrices[s.cls].toLocaleString()}` : "Included"}
                       </span>
                     </div>
                   ))}
                 </div>
               )}
-              <Button variant="hero" size="lg" className="w-full mt-6" disabled={selected.length === 0} asChild>
-                <Link to="/payment">
+
+              {selected.length > 0 && (
+                <div className="space-y-2 text-sm border-t border-border pt-4 mb-4">
+                  <div className="flex justify-between"><span className="text-muted-foreground">Base Fare</span><span className="text-foreground">${baseFare.toFixed(2)}</span></div>
+                  {seatSurcharge > 0 && <div className="flex justify-between"><span className="text-muted-foreground">Seat Upgrade</span><span className="text-foreground">+${seatSurcharge.toFixed(2)}</span></div>}
+                  <div className="flex justify-between"><span className="text-muted-foreground">Taxes & Fees</span><span className="text-foreground">${taxes.toFixed(2)}</span></div>
+                  <div className="flex justify-between font-semibold pt-2 border-t border-border">
+                    <span className="text-foreground">Total</span>
+                    <span className="text-xl text-gold">${total.toFixed(2)}</span>
+                  </div>
+                </div>
+              )}
+
+              <Button variant="hero" size="lg" className="w-full" disabled={selected.length === 0} asChild>
+                <Link to="/payment" search={paymentSearch}>
                   Continue to Payment
                   <ArrowRight className="w-4 h-4" />
                 </Link>
