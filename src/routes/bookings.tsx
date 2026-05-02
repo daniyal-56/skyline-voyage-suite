@@ -93,7 +93,7 @@ function BookingsPage() {
                     {b.status === "upcoming" && (
                       <>
                         <Button variant="outline" size="sm" asChild>
-                          <Link to="/ticket" search={{}}><Download className="w-3.5 h-3.5" /></Link>
+                          <Link to="/ticket"><Download className="w-3.5 h-3.5" /></Link>
                         </Button>
                         <Button variant="ghost" size="sm" className="text-error hover:text-error">
                           <X className="w-3.5 h-3.5" />
