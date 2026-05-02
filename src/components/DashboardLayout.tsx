@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Plane, LayoutDashboard, Search, BookOpen, CreditCard, Settings, LogOut, Ticket, Users, BarChart3, FileText, Radio, UserCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getInitials, signOutDemoUser, useDemoAuth } from "@/lib/demo-auth";
 
 type SidebarItem = { label: string; to: string; icon: React.ComponentType<{ className?: string }> };
 
@@ -67,7 +68,7 @@ export function DashboardSidebar({ variant = "passenger" }: { variant?: "passeng
         })}
       </nav>
 
-      <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-primary-foreground/50 hover:text-error hover:bg-error/10 transition-all mt-4">
+      <button onClick={signOutDemoUser} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-primary-foreground/50 hover:text-error hover:bg-error/10 transition-all mt-4">
         <LogOut className="w-4 h-4" />
         Logout
       </button>
@@ -76,6 +77,9 @@ export function DashboardSidebar({ variant = "passenger" }: { variant?: "passeng
 }
 
 export function DashboardHeader() {
+  const { user } = useDemoAuth();
+  const displayName = user?.name || "Guest Passenger";
+
   return (
     <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6">
       <div className="flex items-center gap-3">
@@ -87,8 +91,12 @@ export function DashboardHeader() {
         <h2 className="text-lg font-semibold text-foreground">Dashboard</h2>
       </div>
       <div className="flex items-center gap-3">
+        <div className="hidden sm:block text-right">
+          <p className="text-sm font-semibold text-foreground">{displayName}</p>
+          <p className="text-xs text-muted-foreground">{user ? "Successfully logged in" : "Demo session"}</p>
+        </div>
         <div className="w-9 h-9 rounded-full bg-teal/10 flex items-center justify-center text-teal text-sm font-semibold cursor-pointer hover:bg-teal/20 transition-colors">
-          JD
+          {getInitials(displayName)}
         </div>
       </div>
     </header>
