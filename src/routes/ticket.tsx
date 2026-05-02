@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Download, Mail, Plane, QrCode } from "lucide-react";
+import { useDemoAuth } from "@/lib/demo-auth";
 
 export const Route = createFileRoute("/ticket")({
   head: () => ({ meta: [{ title: "E-Ticket Confirmation — SkyLine Airways" }] }),
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/ticket")({
 
 function TicketPage() {
   const search = Route.useSearch();
+  const { user } = useDemoAuth();
   const seats = search.seats || "12A";
   const classes = search.classes || "Economy";
   const total = search.total || "736.50";
@@ -56,7 +58,7 @@ function TicketPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div>
                 <p className="text-xs text-muted-foreground mb-1">Passenger</p>
-                <p className="text-sm font-semibold text-foreground">John Doe</p>
+                <p className="text-sm font-semibold text-foreground">{user?.name || "Guest Passenger"}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground mb-1">Flight</p>
