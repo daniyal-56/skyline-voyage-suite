@@ -5,15 +5,25 @@ import { CheckCircle, Download, Mail, Plane, QrCode } from "lucide-react";
 
 export const Route = createFileRoute("/ticket")({
   head: () => ({ meta: [{ title: "E-Ticket Confirmation — SkyLine Airways" }] }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    seats: (search.seats as string) || "12A",
+    classes: (search.classes as string) || "Economy",
+    total: (search.total as string) || "736.50",
+  }),
   component: TicketPage,
 });
 
 function TicketPage() {
+  const { seats, classes, total } = Route.useSearch();
+
+  const seatList = seats ? seats.split(",") : ["12A"];
+  const classList = classes ? classes.split(",") : ["Economy"];
+  const seatDisplay = seatList.map((s: string, i: number) => `${s} · ${classList[i] || "Economy"}`).join("  |  ");
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="pt-24 pb-16 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Success */}
         <div className="text-center mb-10 animate-fade-in-up">
           <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-10 h-10 text-success" />
@@ -22,9 +32,7 @@ function TicketPage() {
           <p className="text-muted-foreground mt-2">Your e-ticket has been generated. Have a great flight!</p>
         </div>
 
-        {/* Boarding pass */}
         <div className="bg-card rounded-2xl overflow-hidden" style={{ boxShadow: "var(--shadow-elevated)" }}>
-          {/* Header */}
           <div className="bg-navy p-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-teal flex items-center justify-center">
@@ -41,7 +49,6 @@ function TicketPage() {
             </div>
           </div>
 
-          {/* Details */}
           <div className="p-6 lg:p-8">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div>
@@ -90,16 +97,15 @@ function TicketPage() {
                 <p className="text-sm font-semibold text-foreground">08:45 PM</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground mb-1">Seat</p>
-                <p className="text-sm font-semibold text-foreground">12A · Economy</p>
+                <p className="text-xs text-muted-foreground mb-1">Seat(s)</p>
+                <p className="text-sm font-semibold text-foreground">{seatDisplay}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground mb-1">Boarding</p>
-                <p className="text-sm font-semibold text-foreground">07:45 AM</p>
+                <p className="text-xs text-muted-foreground mb-1">Total Paid</p>
+                <p className="text-sm font-semibold text-gold">${parseFloat(total).toFixed(2)}</p>
               </div>
             </div>
 
-            {/* QR Code placeholder */}
             <div className="flex flex-col items-center py-6 border-t border-dashed border-border">
               <div className="w-32 h-32 rounded-2xl bg-foreground/5 flex items-center justify-center mb-3">
                 <QrCode className="w-16 h-16 text-foreground/30" />
@@ -109,7 +115,6 @@ function TicketPage() {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3 mt-8">
           <Button variant="hero" size="lg" className="flex-1">
             <Download className="w-4 h-4" />

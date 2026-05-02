@@ -3,12 +3,37 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { CreditCard, Lock, Shield, Plane } from "lucide-react";
 
+const searchSchema = {
+  seats: "",
+  classes: "",
+  baseFare: "649",
+  seatSurcharge: "0",
+  taxes: "87.50",
+  total: "736.50",
+};
+
 export const Route = createFileRoute("/payment")({
   head: () => ({ meta: [{ title: "Payment — SkyLine Airways" }] }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    seats: (search.seats as string) || searchSchema.seats,
+    classes: (search.classes as string) || searchSchema.classes,
+    baseFare: (search.baseFare as string) || searchSchema.baseFare,
+    seatSurcharge: (search.seatSurcharge as string) || searchSchema.seatSurcharge,
+    taxes: (search.taxes as string) || searchSchema.taxes,
+    total: (search.total as string) || searchSchema.total,
+  }),
   component: PaymentPage,
 });
 
 function PaymentPage() {
+  const { seats, classes, baseFare, seatSurcharge, taxes, total } = Route.useSearch();
+
+  const seatList = seats ? seats.split(",") : [];
+  const classList = classes ? classes.split(",") : [];
+  const seatDisplay = seatList.length > 0
+    ? seatList.map((s: string, i: number) => `${s} (${classList[i] || "Economy"})`).join(", ")
+    : "12A (Economy)";
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -32,12 +57,15 @@ function PaymentPage() {
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-muted-foreground">Passenger</span><span className="text-foreground">John Doe</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Seat</span><span className="text-foreground">12A (Economy)</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Base Fare</span><span className="text-foreground">$649.00</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Taxes & Fees</span><span className="text-foreground">$87.50</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Seat(s)</span><span className="text-foreground text-right max-w-[180px]">{seatDisplay}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Base Fare</span><span className="text-foreground">${parseFloat(baseFare).toFixed(2)}</span></div>
+                {parseFloat(seatSurcharge) > 0 && (
+                  <div className="flex justify-between"><span className="text-muted-foreground">Seat Upgrade</span><span className="text-foreground">+${parseFloat(seatSurcharge).toFixed(2)}</span></div>
+                )}
+                <div className="flex justify-between"><span className="text-muted-foreground">Taxes & Fees</span><span className="text-foreground">${parseFloat(taxes).toFixed(2)}</span></div>
                 <div className="border-t border-border pt-2 flex justify-between font-semibold">
                   <span className="text-foreground">Total</span>
-                  <span className="text-xl text-gold">$736.50</span>
+                  <span className="text-xl text-gold">${parseFloat(total).toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -48,7 +76,6 @@ function PaymentPage() {
             <div className="bg-card rounded-2xl p-6 lg:p-8" style={{ boxShadow: "var(--shadow-card)" }}>
               <h3 className="text-lg font-semibold text-foreground mb-6">Payment Details</h3>
 
-              {/* Payment methods */}
               <div className="flex gap-3 mb-6">
                 {["Visa", "Mastercard", "PayPal", "Apple Pay"].map((m, i) => (
                   <button key={m} className={`px-4 py-2 rounded-xl border text-sm font-medium transition-all ${i === 0 ? "border-teal bg-teal/5 text-teal" : "border-border text-muted-foreground hover:border-teal/50"}`}>
@@ -91,9 +118,9 @@ function PaymentPage() {
               </div>
 
               <Button variant="hero" size="xl" className="w-full mt-6" asChild>
-                <Link to="/ticket">
+                <Link to="/ticket" search={{ seats, classes, total }}>
                   <Lock className="w-4 h-4" />
-                  Confirm Payment — $736.50
+                  Confirm Payment — ${parseFloat(total).toFixed(2)}
                 </Link>
               </Button>
             </div>
