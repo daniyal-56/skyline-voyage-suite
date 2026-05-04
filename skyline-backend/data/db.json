@@ -1,0 +1,11 @@
+{
+  "users": [],
+  "flights": [
+    { "id": "SL-101", "airline": "SkyLine Airways", "from": "JFK", "to": "LHR", "dep": "08:30", "arr": "20:45", "dur": "7h 15m", "stops": "Non-stop", "seats": 24, "price": 649, "cls": "Economy" },
+    { "id": "SL-205", "airline": "SkyLine Airways", "from": "JFK", "to": "LHR", "dep": "11:00", "arr": "23:15", "dur": "7h 15m", "stops": "Non-stop", "seats": 12, "price": 789, "cls": "Business" },
+    { "id": "SL-312", "airline": "SkyLine Airways", "from": "JFK", "to": "LHR", "dep": "14:45", "arr": "03:00", "dur": "7h 15m", "stops": "1 stop", "seats": 42, "price": 529, "cls": "Economy" }
+  ],
+  "bookings": [
+    { "id": "SL-2026-78542", "userId": "john.doe@skyline.demo", "from": "JFK", "to": "LHR", "fromCity": "New York", "toCity": "London", "date": "Jun 15, 2026", "seat": "12A", "status": "upcoming", "price": "$736.50" }
+  ]
+}
