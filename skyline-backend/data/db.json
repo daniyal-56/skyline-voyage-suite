@@ -1,11 +1,79 @@
 {
-  "users": [],
+  "users": [
+    {
+      "email": "daniyalahmed.2112@gmail.com",
+      "password": "$2b$10$s0qR1vsq7QOhOPx47gcW/e2OlTywthufVj33d/EEFQcDiS8O0tjnq",
+      "role": "admin"
+    },
+    {
+      "email": "sidrazahid2001@gmail.com",
+      "password": "$2b$10$45ZiKhGSdnQlX5Mn2nc5Eucn8eEt.RMEH0Fa8kA5SeeSZcFy2YPR2",
+      "role": "staff"
+    },
+    {
+      "email": "sidrazahid2001@gmailll.com",
+      "password": "$2b$10$A/oyb9xpzCeouDgrv/w/auPLH8.PkO7N.y0Netftddib.hE65.Uyi",
+      "role": "staff"
+    },
+    {
+      "email": "sidrazahid2001@gmaillllllll.com",
+      "password": "$2b$10$IbDrtdEle.kB.yYJplN/9.Gi3XLHLC1fqhb0ynLbBaksLemlBTMNG",
+      "role": "staff"
+    }
+  ],
   "flights": [
-    { "id": "SL-101", "airline": "SkyLine Airways", "from": "JFK", "to": "LHR", "dep": "08:30", "arr": "20:45", "dur": "7h 15m", "stops": "Non-stop", "seats": 24, "price": 649, "cls": "Economy" },
-    { "id": "SL-205", "airline": "SkyLine Airways", "from": "JFK", "to": "LHR", "dep": "11:00", "arr": "23:15", "dur": "7h 15m", "stops": "Non-stop", "seats": 12, "price": 789, "cls": "Business" },
-    { "id": "SL-312", "airline": "SkyLine Airways", "from": "JFK", "to": "LHR", "dep": "14:45", "arr": "03:00", "dur": "7h 15m", "stops": "1 stop", "seats": 42, "price": 529, "cls": "Economy" }
+    {
+      "id": "SL-101",
+      "airline": "SkyLine Airways",
+      "from": "JFK",
+      "to": "LHR",
+      "dep": "08:30",
+      "arr": "20:45",
+      "dur": "7h 15m",
+      "stops": "Non-stop",
+      "seats": 24,
+      "price": 649,
+      "cls": "Economy"
+    },
+    {
+      "id": "SL-205",
+      "airline": "SkyLine Airways",
+      "from": "JFK",
+      "to": "LHR",
+      "dep": "11:00",
+      "arr": "23:15",
+      "dur": "7h 15m",
+      "stops": "Non-stop",
+      "seats": 12,
+      "price": 789,
+      "cls": "Business"
+    },
+    {
+      "id": "SL-312",
+      "airline": "SkyLine Airways",
+      "from": "JFK",
+      "to": "LHR",
+      "dep": "14:45",
+      "arr": "03:00",
+      "dur": "7h 15m",
+      "stops": "1 stop",
+      "seats": 42,
+      "price": 529,
+      "cls": "Economy"
+    }
   ],
   "bookings": [
-    { "id": "SL-2026-78542", "userId": "john.doe@skyline.demo", "from": "JFK", "to": "LHR", "fromCity": "New York", "toCity": "London", "date": "Jun 15, 2026", "seat": "12A", "status": "upcoming", "price": "$736.50" }
+    {
+      "id": "SL-2026-78542",
+      "userId": "john.doe@skyline.demo",
+      "from": "JFK",
+      "to": "LHR",
+      "fromCity": "New York",
+      "toCity": "London",
+      "date": "Jun 15, 2026",
+      "seat": "12A",
+      "status": "upcoming",
+      "price": "$736.50"
+    }
   ]
 }

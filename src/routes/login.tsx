@@ -1,180 +1,130 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Plane, Lock, Mail, UserCircle, AlertCircle } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plane, Mail, Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
-import { useState, type FormEvent } from "react";
-import authBg from "@/assets/auth-bg.jpg";
-import { signInDemoUser, useDemoAuth } from "@/lib/demo-auth";
-import { validateLogin } from "@/lib/validation";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({
-    meta: [
-      { title: "Log In — SkyLine Airways" },
-      { name: "description", content: "Log in to your SkyLine Airways account." },
-    ],
-  }),
   component: LoginPage,
 });
 
 function LoginPage() {
-  const [showPw, setShowPw] = useState(false);
-  const [values, setValues] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState<Partial<Record<"email" | "password", string>>>({});
-  const navigate = useNavigate({ from: "/login" });
-  const { user } = useDemoAuth();
+  const navigate = useNavigate();
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("customer");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const nextErrors = validateLogin(values);
-    setErrors(nextErrors);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
-    if (Object.keys(nextErrors).length === 0) {
-      signInDemoUser(values.email);
-      navigate({ to: "/bookings" });
+    const endpoint = isRegistering ? "/api/auth/register" : "/api/auth/login";
+    const body = isRegistering ? { email, password, role } : { email, password };
+
+    try {
+      const response = await fetch(`http://localhost:5000${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      if (isRegistering) {
+        // Automatically switch to login mode after successful registration
+        setIsRegistering(false);
+        setPassword("");
+        setError("Registration successful! Please log in.");
+      } else {
+        // SUCCESSFUL LOGIN! Save the digital ID card (token) and user info
+        localStorage.setItem("skyline_token", data.token);
+        localStorage.setItem("skyline_user", JSON.stringify(data.user));
+
+        // Redirect based on their real backend role
+        if (data.user.role === "admin") navigate({ to: "/admin" });
+        else if (data.user.role === "staff") navigate({ to: "/staff" });
+        else navigate({ to: "/flights" });
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left visual */}
-      <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center overflow-hidden">
-        <img src={authBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-br from-navy/90 to-navy/70" />
-        <div className="relative z-10 p-16 max-w-lg">
-          <Link to="/" className="flex items-center gap-2.5 mb-10">
-            <div className="w-10 h-10 rounded-xl bg-teal flex items-center justify-center">
-              <Plane className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="text-2xl font-bold text-primary-foreground tracking-tight">
-              SkyLine <span className="font-light">Airways</span>
-            </span>
-          </Link>
-          <h2 className="text-4xl font-bold text-primary-foreground leading-tight mb-4">
-            Fly Smarter,
-            <br />
-            Travel Better.
-          </h2>
-          <p className="text-primary-foreground/60 leading-relaxed">
-            Access exclusive deals, manage your bookings, and enjoy a seamless travel experience.
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-md bg-card rounded-2xl border border-border p-8" style={{ boxShadow: "var(--shadow-card)" }}>
+        
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-12 h-12 rounded-xl bg-teal/10 flex items-center justify-center mb-4">
+            <Plane className="w-6 h-6 text-teal" />
+          </div>
+          <h1 className="text-2xl font-bold text-foreground">
+            {isRegistering ? "Create an Account" : "Welcome to SkyLine"}
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {isRegistering ? "Register your secure profile" : "Sign in to your account"}
           </p>
         </div>
-      </div>
 
-      {/* Right form */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-background">
-        <div className="w-full max-w-md">
-          <Link to="/" className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="w-8 h-8 rounded-lg bg-teal flex items-center justify-center">
-              <Plane className="w-4 h-4 text-primary-foreground" />
+        {error && (
+          <div className={`p-3 rounded-lg mb-6 flex items-center gap-2 text-sm ${error.includes('successful') ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}`}>
+            <AlertCircle className="w-4 h-4" />
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="text-sm font-medium text-foreground mb-1 block">Email Address</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" className="w-full bg-background border border-border rounded-lg pl-10 pr-4 py-2.5 text-foreground focus:outline-none focus:border-teal" />
             </div>
-            <span className="text-lg font-bold text-foreground">SkyLine Airways</span>
-          </Link>
+          </div>
 
-          <h1 className="text-2xl font-bold text-foreground mb-1">Welcome back</h1>
-          <p className="text-muted-foreground text-sm mb-8">
-            Enter your credentials to access your account
-          </p>
-
-          {user && (
-            <div className="mb-5 flex items-center gap-2 rounded-xl border border-success/20 bg-success/5 p-3 text-sm font-medium text-success">
-              <CheckCircle className="h-4 w-4" />
-              Successfully logged in as {user.name}
+          {/* Only show Role selection if creating a new account */}
+          {isRegistering && (
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1 block">Assign Role</label>
+              <div className="relative">
+                <UserCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full bg-background border border-border rounded-lg pl-10 pr-4 py-2.5 text-foreground focus:outline-none focus:border-teal appearance-none cursor-pointer">
+                  <option value="customer">Customer</option>
+                  <option value="staff">Gate Agent (Staff)</option>
+                  <option value="admin">System Admin</option>
+                </select>
+              </div>
             </div>
           )}
 
-          <form className="space-y-4" onSubmit={handleSubmit} noValidate>
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1.5 block">Email</label>
-              <div className="flex items-center gap-3 h-12 px-4 rounded-xl border border-border bg-background focus-within:border-teal focus-within:ring-2 focus-within:ring-teal/20 transition-all">
-                <Mail className="w-4 h-4 text-muted-foreground" />
-                <input
-                  className="w-full text-sm bg-transparent focus:outline-none"
-                  placeholder="you@example.com"
-                  type="email"
-                  value={values.email}
-                  onChange={(event) =>
-                    setValues((prev) => ({ ...prev, email: event.target.value }))
-                  }
-                  aria-invalid={Boolean(errors.email)}
-                />
-              </div>
-              {errors.email && (
-                <p className="mt-1.5 text-xs font-medium text-error">{errors.email}</p>
-              )}
+          <div>
+            <label className="text-sm font-medium text-foreground mb-1 block">Password</label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full bg-background border border-border rounded-lg pl-10 pr-4 py-2.5 text-foreground focus:outline-none focus:border-teal" />
             </div>
+          </div>
 
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1.5 block">Password</label>
-              <div className="flex items-center gap-3 h-12 px-4 rounded-xl border border-border bg-background focus-within:border-teal focus-within:ring-2 focus-within:ring-teal/20 transition-all">
-                <Lock className="w-4 h-4 text-muted-foreground" />
-                <input
-                  className="w-full text-sm bg-transparent focus:outline-none"
-                  placeholder="••••••••"
-                  type={showPw ? "text" : "password"}
-                  value={values.password}
-                  onChange={(event) =>
-                    setValues((prev) => ({ ...prev, password: event.target.value }))
-                  }
-                  aria-invalid={Boolean(errors.password)}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw(!showPw)}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="mt-1.5 text-xs font-medium text-error">{errors.password}</p>
-              )}
-            </div>
+          <Button type="submit" variant="teal" className="w-full mt-2" disabled={isLoading}>
+            {isLoading ? "Processing..." : (isRegistering ? "Register Account" : "Sign In Securely")}
+          </Button>
+        </form>
 
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 rounded border-border text-teal focus:ring-teal"
-                />
-                <span className="text-muted-foreground">Remember me</span>
-              </label>
-              <a href="#" className="text-teal hover:underline font-medium">
-                Forgot password?
-              </a>
-            </div>
-
-            <Button variant="hero" size="lg" className="w-full" type="submit">
-              Log In
-            </Button>
-
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="bg-background px-4 text-xs text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" size="lg">
-                Google
-              </Button>
-              <Button variant="outline" size="lg">
-                Apple
-              </Button>
-            </div>
-
-            <p className="text-center text-sm text-muted-foreground mt-6">
-              Don't have an account?{" "}
-              <Link to="/signup" className="text-teal font-semibold hover:underline">
-                Sign up
-              </Link>
-            </p>
-          </form>
+        <div className="mt-6 text-center">
+          <button onClick={() => { setIsRegistering(!isRegistering); setError(""); }} className="text-sm text-teal hover:underline focus:outline-none">
+            {isRegistering ? "Already have an account? Sign in" : "Need an account? Register here"}
+          </button>
         </div>
+
       </div>
     </div>
   );
